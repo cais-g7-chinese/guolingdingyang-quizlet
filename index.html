@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《過零丁洋》字詞 Quizlet · 中英雙語</title>
+<style>
+:root{
+  --paper:#f6f1e6; --paper2:#efe7d6; --ink:#2b2620; --ink2:#5a5347;
+  --line:#cfc4ac; --red:#9c3424; --red-deep:#6e2418; --gold:#b08a3e;
+  --ok:#2f6b4f; --bad:#9c3424;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{height:100%;}
+body{
+  font-family:"Songti SC","Noto Serif CJK SC","STSong","Kaiti SC","SimSun",serif;
+  background:var(--paper); color:var(--ink);
+  -webkit-font-smoothing:antialiased; line-height:1.7;
+  min-height:100vh;
+  background-image:radial-gradient(rgba(120,100,70,.06) 1px, transparent 1px);
+  background-size:22px 22px;
+}
+.wrap{max-width:760px; margin:0 auto; padding:22px 16px 50px;}
+
+header{ text-align:center; margin:6px 0 18px; }
+.chop{ display:inline-block; width:44px; height:44px; line-height:44px;
+  background:var(--red); color:#fdf6ec; font-size:20px; text-align:center;
+  border-radius:6px; margin-bottom:8px; font-family:"Kaiti SC","STKaiti",serif;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.25); }
+h1{ font-size:24px; font-weight:600; letter-spacing:.1em; }
+.sub{ font-size:13px; color:var(--ink2); margin-top:4px; }
+
+.modes{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }
+@media (max-width:560px){ .modes{ grid-template-columns:repeat(2,1fr); } }
+.mode{ padding:18px 8px; background:var(--paper2); border:1px solid var(--line);
+  border-radius:10px; text-align:center; cursor:pointer; transition:all .15s;
+  font-family:inherit; color:var(--ink); }
+.mode:hover{ border-color:var(--red); background:#fff; transform:translateY(-2px); }
+.mode.active{ background:var(--red); color:#fdf6ec; border-color:var(--red); }
+.mode .emo{ font-size:26px; display:block; margin-bottom:6px; }
+.mode .mtitle{ font-size:15px; font-weight:600; margin-bottom:2px; letter-spacing:.05em; }
+.mode .men{ font-size:11px; opacity:.75; font-style:italic; }
+
+.stage{ background:var(--paper2); border:1px solid var(--line); border-radius:12px;
+  padding:22px 18px; min-height:380px; position:relative; }
+
+.scorebar{ display:flex; justify-content:space-between; align-items:center;
+  padding:10px 16px; margin:14px 0 8px; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.score{ font-size:14px; color:var(--ink2); }
+.score b{ color:var(--red); font-size:18px; margin:0 4px; }
+.status{ font-size:13px; color:var(--ink2); }
+
+/* ===== 字詞卡模式 ===== */
+.flash-card{ background:#fbf8f1; border:1px solid var(--line); border-radius:14px;
+  padding:50px 30px; min-height:240px; display:flex; flex-direction:column;
+  justify-content:center; align-items:center; cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,0,0,.06); transition:transform .3s; position:relative; }
+.flash-card:hover{ transform:scale(1.02); }
+.fc-cn{ font-size:48px; font-weight:600; color:var(--red); margin-bottom:14px; letter-spacing:.1em; }
+.fc-def{ font-size:17px; color:var(--ink); text-align:center; line-height:1.8; }
+.fc-en{ font-size:14px; color:var(--ink2); font-style:italic; margin-top:14px; text-align:center; }
+.fc-hint{ position:absolute; bottom:14px; right:18px; font-size:11px; color:var(--ink2); opacity:.6; }
+
+.fc-controls{ display:flex; justify-content:center; gap:10px; margin-top:18px; }
+.fc-btn{ min-width:120px; padding:12px 18px; font-size:15px; font-family:inherit;
+  background:var(--paper2); border:1px solid var(--line); color:var(--ink);
+  border-radius:8px; cursor:pointer; transition:all .15s; }
+.fc-btn:hover{ border-color:var(--red); }
+.fc-btn.primary{ background:var(--red); color:#fdf6ec; border-color:var(--red); }
+.fc-btn.primary:hover{ background:var(--red-deep); }
+.fc-btn.no{ color:var(--bad); }
+.fc-btn.yes{ color:var(--ok); }
+
+/* ===== 配對模式 ===== */
+.match-area{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.match-col h3{ font-size:13px; color:var(--ink2); margin-bottom:8px; text-align:center; letter-spacing:.1em; }
+.match-list{ display:flex; flex-direction:column; gap:8px; }
+.match-item{ padding:12px 14px; background:#fbf8f1; border:1.5px solid var(--line);
+  border-radius:8px; cursor:pointer; text-align:center; font-size:16px;
+  transition:all .15s; }
+.match-item:hover{ border-color:var(--ink2); }
+.match-item.sel{ background:#fdf6ec; border-color:var(--red); color:var(--red); }
+.match-item.matched{ background:#e9f1ea; border-color:var(--ok); color:var(--ok); cursor:default; }
+.match-item.matched::before{ content:"✓ "; font-weight:600; }
+.match-item.wrong{ background:#f4e6e2; border-color:var(--bad); animation:shake .4s; }
+@keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
+
+/* ===== 測驗模式 ===== */
+.quiz-q{ font-size:18px; text-align:center; padding:14px; margin-bottom:18px;
+  background:#fbf8f1; border:1px solid var(--line); border-radius:8px; }
+.quiz-q b{ color:var(--red); font-size:22px; }
+.quiz-opts{ display:flex; flex-direction:column; gap:10px; }
+.quiz-opt{ padding:14px 18px; font-size:16px; text-align:left; font-family:inherit;
+  background:#fbf8f1; border:1px solid var(--line); border-radius:8px; cursor:pointer;
+  transition:all .15s; color:var(--ink); }
+.quiz-opt:hover{ border-color:var(--ink2); }
+.quiz-opt.correct{ background:#e9f1ea; border-color:var(--ok); color:var(--ok); }
+.quiz-opt.correct::after{ content:"　✓"; font-weight:600; }
+.quiz-opt.wrong{ background:#f4e6e2; border-color:var(--bad); color:var(--bad); }
+.quiz-opt.wrong::after{ content:"　✕"; font-weight:600; }
+.quiz-opt.disabled{ pointer-events:none; opacity:.55; }
+
+/* ===== 拼寫模式 ===== */
+.spelling{ text-align:center; }
+.spelling-def{ background:#fbf8f1; border:1px solid var(--line); border-radius:10px;
+  padding:20px; margin-bottom:18px; }
+.spelling-def .dcn{ font-size:17px; margin-bottom:6px; }
+.spelling-def .den{ font-size:14px; color:var(--ink2); font-style:italic; }
+.spelling-hint{ font-size:14px; color:var(--ink2); margin-bottom:14px; }
+.spelling-input{ width:100%; max-width:340px; padding:14px 18px; font-size:22px;
+  text-align:center; font-family:inherit; border:2px solid var(--line); border-radius:8px;
+  background:#fff; color:var(--ink); letter-spacing:.2em; }
+.spelling-input:focus{ outline:none; border-color:var(--red); }
+.spelling-input.right{ border-color:var(--ok); background:#e9f1ea; color:var(--ok); }
+.spelling-input.wrong{ border-color:var(--bad); background:#f4e6e2; color:var(--bad); animation:shake .4s; }
+.spelling-fb{ margin-top:14px; font-size:14px; min-height:24px; }
+.spelling-fb.ok{ color:var(--ok); }
+.spelling-fb.no{ color:var(--bad); }
+
+.btnrow{ text-align:center; margin-top:18px; }
+.btn{ display:inline-block; min-width:140px; padding:12px 24px; font-size:15px;
+  font-family:inherit; background:var(--red); color:#fdf6ec; border:none; border-radius:8px;
+  cursor:pointer; letter-spacing:.1em; transition:background .15s; }
+.btn:hover{ background:var(--red-deep); }
+.btn.ghost{ background:transparent; color:var(--ink2); border:1px solid var(--line); }
+.btn.ghost:hover{ border-color:var(--ink2); background:#fff; color:var(--ink); }
+
+.result{ text-align:center; padding:24px 16px; }
+.result .chop{ font-size:30px; width:64px; height:64px; line-height:64px; }
+.result h2{ font-size:22px; margin:10px 0 6px; letter-spacing:.08em; }
+.result .rank{ font-size:17px; color:var(--red); margin:6px 0; }
+.result .desc{ font-size:14px; color:var(--ink2); margin:8px 0 16px; }
+
+footer{ text-align:center; font-size:12px; color:var(--ink2); margin-top:24px; opacity:.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="chop">字</div>
+    <h1>《過零丁洋》字詞 Quizlet</h1>
+    <div class="sub">Vocabulary Quizlet · 中英雙語</div>
+  </header>
+
+  <div class="modes" id="modes">
+    <button class="mode active" data-mode="flash"><span class="emo">📖</span><span class="mtitle">字詞卡</span><span class="men">Flashcards</span></button>
+    <button class="mode" data-mode="match"><span class="emo">🎴</span><span class="mtitle">配對</span><span class="men">Match</span></button>
+    <button class="mode" data-mode="quiz"><span class="emo">❓</span><span class="mtitle">測驗</span><span class="men">Test</span></button>
+    <button class="mode" data-mode="spell"><span class="emo">✍️</span><span class="mtitle">拼寫</span><span class="men">Spell</span></button>
+  </div>
+
+  <div class="scorebar">
+    <div class="score">丹心值 <b id="scoreVal">0</b> 分</div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="stage" id="stage"></div>
+
+  <footer>人生自古誰無死，留取丹心照汗青</footer>
+</div>
+
+<script>
+var WORDS = [
+  { w:"遭逢", cn:"遇到（朝廷選拔）", en:"to encounter (imperial selection)" },
+  { w:"起一經", cn:"精通一經，由科舉入仕", en:"to enter officialdom via the civil-service exam" },
+  { w:"干戈", cn:"古代兵器，借指戰爭", en:"weapons of war; warfare" },
+  { w:"寥落", cn:"荒涼冷落，響應者少", en:"sparse; with few responders" },
+  { w:"四周星", cn:"四年（地球繞太陽一周）", en:"four years (the sun's full circuit)" },
+  { w:"風飄絮", cn:"柳絮隨風飄散，比國破家亡", en:"catkins blown by wind (≈ a shattered realm)" },
+  { w:"雨打萍", cn:"浮萍被雨打擊，比身世坎坷", en:"duckweed beaten by rain (≈ a drifting fate)" },
+  { w:"惶恐灘", cn:"江西贛江險灘，兵敗退兵處", en:"Huangkong Shoal — site of a Jiangxi retreat" },
+  { w:"零丁", cn:"孤苦無依的樣子", en:"lonely; forlorn" },
+  { w:"丹心", cn:"赤誠忠心，比忠貞的愛國情懷", en:"loyal red heart; devoted patriotism" },
+  { w:"汗青", cn:"史冊（竹簡烘乾後書寫）", en:"historical records / annals" },
+  { w:"留取", cn:"留下（一份）", en:"to leave behind; to preserve" }
+];
+
+var state = {
+  mode:"flash", score:0,
+  flash:{ idx:0, flipped:false, known:0, unknown:0 },
+  match:{ matched:0, wrong:0, sel:null },
+  quiz: { idx:0, correct:0, answered:false },
+  spell:{ idx:0, correct:0, total:0, locked:false }
+};
+
+var stage = document.getElementById('stage');
+var scoreVal = document.getElementById('scoreVal');
+var statusEl = document.getElementById('status');
+var modesEl = document.getElementById('modes');
+
+function shuffle(arr){
+  for(var i=arr.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=arr[i]; arr[i]=arr[j]; arr[j]=t;
+  }
+  return arr;
+}
+function updateScore(){ scoreVal.textContent = state.score; }
+
+function setMode(m){
+  state.mode = m;
+  modesEl.querySelectorAll('.mode').forEach(function(b){ b.classList.toggle('active', b.dataset.mode===m); });
+  if(m==='flash'){ state.flash={ idx:0, flipped:false, known:0, unknown:0 }; renderFlash(); }
+  else if(m==='match'){ startMatch(); }
+  else if(m==='quiz'){ startQuiz(); }
+  else if(m==='spell'){ startSpell(); }
+}
+
+function renderFlash(){
+  var cur = state.flash;
+  var item = WORDS[cur.idx];
+  statusEl.textContent = (cur.idx+1) + ' / ' + WORDS.length;
+  stage.innerHTML =
+    '<div class="flash-card" id="fcCard">'+
+      '<div class="fc-cn">'+ (cur.flipped ? item.w : '?') +'</div>'+
+      (cur.flipped
+        ? '<div class="fc-def">'+item.cn+'</div><div class="fc-en">'+item.en+'</div>'
+        : '<div class="fc-def" style="color:var(--ink2)">（點擊查看）</div>')+
+      '<div class="fc-hint">點擊卡片翻面</div>'+
+    '</div>'+
+    '<div class="fc-controls">'+
+      '<button class="fc-btn no" id="fcNo">✕ 不認識</button>'+
+      '<button class="fc-btn primary" id="fcFlip">翻面</button>'+
+      '<button class="fc-btn yes" id="fcYes">✓ 認識</button>'+
+    '</div>';
+  document.getElementById('fcCard').addEventListener('click', function(){
+    if(!cur.flipped){ cur.flipped=true; state.score+=1; updateScore(); renderFlash(); }
+  });
+  document.getElementById('fcFlip').addEventListener('click', function(e){
+    e.stopPropagation();
+    if(!cur.flipped){ cur.flipped=true; state.score+=1; updateScore(); renderFlash(); }
+    else{ nextFlash(); }
+  });
+  document.getElementById('fcNo').addEventListener('click', function(e){
+    e.stopPropagation();
+    cur.unknown++;
+    if(cur.flipped){ state.score = Math.max(0, state.score-1); updateScore(); }
+    nextFlash();
+  });
+  document.getElementById('fcYes').addEventListener('click', function(e){
+    e.stopPropagation();
+    cur.known++;
+    if(cur.flipped){ state.score+=2; updateScore(); }
+    nextFlash();
+  });
+}
+function nextFlash(){
+  state.flash.flipped = false;
+  state.flash.idx++;
+  if(state.flash.idx >= WORDS.length){ finishFlash(); } else { renderFlash(); }
+}
+function finishFlash(){
+  var k=state.flash.known, u=state.flash.unknown;
+  var pct = Math.round(k/WORDS.length*100);
+  stage.innerHTML =
+    '<div class="result">'+
+      '<div class="chop">辭</div>'+
+      '<h2>字詞卡完成</h2>'+
+      '<div class="rank">認識 '+k+' / '+WORDS.length+' · 不認識 '+u+'</div>'+
+      '<div class="desc">繼續用「配對」或「測驗」鞏固記憶。</div>'+
+      '<div class="btnrow">'+
+        '<button class="btn ghost" id="fcAgain" style="margin-right:10px">再來一輪</button>'+
+        '<button class="btn" id="fcNext">下一個模式 →</button>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('fcAgain').addEventListener('click', function(){
+    state.flash={ idx:0, flipped:false, known:0, unknown:0 };
+    renderFlash();
+  });
+  document.getElementById('fcNext').addEventListener('click', function(){ setMode('match'); });
+}
+
+function startMatch(){
+  state.match = { matched:0, wrong:0, sel:null, words:shuffle(WORDS.slice()), defs:shuffle(WORDS.slice()) };
+  statusEl.textContent = '已配對 0 / ' + WORDS.length;
+  renderMatch();
+}
+function renderMatch(){
+  var m = state.match;
+  var html = '<div class="match-area">';
+  html += '<div class="match-col"><h3>字詞 Word</h3><div class="match-list">';
+  m.words.forEach(function(item){
+    var cls = 'match-item';
+    if(m.sel && m.sel.side==='w' && m.sel.w===item.w) cls += ' sel';
+    html += '<div class="'+cls+'" data-side="w" data-w="'+item.w+'">'+item.w+'</div>';
+  });
+  html += '</div></div>';
+  html += '<div class="match-col"><h3>解釋 Definition</h3><div class="match-list">';
+  m.defs.forEach(function(item){
+    var matched = document.querySelector('.match-item.matched[data-side="d"][data-w="'+item.w+'"]');
+    var cls = 'match-item';
+    if(m.sel && m.sel.side==='d' && m.sel.w===item.w) cls += ' sel';
+    if(matched) cls += ' matched';
+    html += '<div class="'+cls+'" data-side="d" data-w="'+item.w+'">'+item.cn+'</div>';
+  });
+  html += '</div></div></div>';
+  stage.innerHTML = html;
+
+  document.querySelectorAll('.match-item').forEach(function(el){
+    el.addEventListener('click', function(){
+      if(el.classList.contains('matched')) return;
+      var side = el.dataset.side, w = el.dataset.w;
+      if(!m.sel){ m.sel = { side:side, w:w }; renderMatch(); return; }
+      if(m.sel.side === side){ m.sel = { side:side, w:w }; renderMatch(); return; }
+      // 兩邊都選了 → 判斷
+      if(m.sel.w === w){
+        // 正確
+        m.matched++;
+        state.score += 5;
+        updateScore();
+        statusEl.textContent = '已配對 ' + m.matched + ' / ' + WORDS.length;
+        // 標記已配對
+        var wEl = document.querySelector('.match-item[data-side="w"][data-w="'+w+'"]');
+        var dEl = document.querySelector('.match-item[data-side="d"][data-w="'+w+'"]');
+        if(wEl) wEl.classList.add('matched');
+        if(dEl) dEl.classList.add('matched');
+        m.sel = null;
+        if(m.matched === WORDS.length){ setTimeout(finishMatch, 600); }
+      } else {
+        // 錯誤
+        m.wrong++;
+        state.score = Math.max(0, state.score - 2);
+        updateScore();
+        var sEl = document.querySelector('.match-item[data-side="'+m.sel.side+'"][data-w="'+m.sel.w+'"]');
+        var cEl = document.querySelector('.match-item[data-side="'+side+'"][data-w="'+w+'"]');
+        if(sEl) sEl.classList.add('wrong');
+        if(cEl) cEl.classList.add('wrong');
+        setTimeout(function(){
+          if(sEl) sEl.classList.remove('wrong');
+          if(cEl) cEl.classList.remove('wrong');
+          m.sel = null;
+          renderMatch();
+        }, 700);
+      }
+    });
+  });
+}
+function finishMatch(){
+  stage.innerHTML =
+    '<div class="result">'+
+      '<div class="chop">成</div>'+
+      '<h2>配對完成</h2>'+
+      '<div class="rank">錯 '+state.match.wrong+' 次</div>'+
+      '<div class="desc">下一關：測驗模式，鞏固記憶。</div>'+
+      '<div class="btnrow">'+
+        '<button class="btn ghost" id="mAgain" style="margin-right:10px">再玩一次</button>'+
+        '<button class="btn" id="mNext">下一個模式 →</button>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('mAgain').addEventListener('click', startMatch);
+  document.getElementById('mNext').addEventListener('click', function(){ setMode('quiz'); });
+}
+
+function startQuiz(){
+  state.quiz = { idx:0, correct:0, answered:false, list:shuffle(WORDS.slice()) };
+  statusEl.textContent = '題目 0 / ' + WORDS.length;
+  renderQuiz();
+}
+function renderQuiz(){
+  var q = state.quiz;
+  if(q.idx >= WORDS.length){ finishQuiz(); return; }
+  var item = q.list[q.idx];
+  // 出 4 個選項：1 正確 + 3 干擾（從其他字隨機）
+  var others = WORDS.filter(function(x){ return x.w !== item.w; });
+  shuffle(others);
+  var opts = [{w:item.w, ok:true}].concat(others.slice(0,3).map(function(x){ return {w:x.w, ok:false}; }));
+  shuffle(opts);
+  statusEl.textContent = '題目 ' + (q.idx+1) + ' / ' + WORDS.length;
+  stage.innerHTML =
+    '<div class="quiz-q"><b>'+item.cn+'</b><br><span style="font-size:14px;color:var(--ink2);font-style:italic">'+item.en+'</span><br><span style="font-size:13px;color:var(--ink2)">對應的詞語是？</span></div>'+
+    '<div class="quiz-opts">'+
+      opts.map(function(o){
+ return '<button class="quiz-opt" data-ok="'+o.ok+'" data-w="'+o.w+'">'+o.w+'</button>';
+      }).join('')+
+    '</div>';
+  document.querySelectorAll('.quiz-opt').forEach(function(b){
+    b.addEventListener('click', function(){
+      if(q.answered) return;
+      q.answered = true;
+      var ok = b.dataset.ok === 'true';
+      document.querySelectorAll('.quiz-opt').forEach(function(x){
+        x.classList.add('disabled');
+        if(x.dataset.ok === 'true') x.classList.add('correct');
+        else if(x === b && !ok) x.classList.add('wrong');
+      });
+      if(ok){ q.correct++; state.score+=5; }
+      else { state.score = Math.max(0, state.score - 2); }
+      updateScore();
+      setTimeout(function(){ q.idx++; q.answered=false; renderQuiz(); }, 1100);
+    });
+  });
+}
+function finishQuiz(){
+  var c=state.quiz.correct, total=WORDS.length;
+  var pct = Math.round(c/total*100);
+  var rank = pct===100 ? '全對！丹心狀元' : pct>=80 ? '錚錚鐵骨' : pct>=60 ? '勤勉赤子' : '初識忠魂';
+  stage.innerHTML =
+    '<div class="result">'+
+      '<div class="chop">'+rank.charAt(0)+'</div>'+
+      '<h2>'+rank+'</h2>'+
+      '<div class="rank">答對 '+c+' / '+total+'</div>'+
+      '<div class="desc">下一關：拼寫，親手寫一遍記更牢。</div>'+
+      '<div class="btnrow">'+
+        '<button class="btn ghost" id="qAgain" style="margin-right:10px">再測一次</button>'+
+        '<button class="btn" id="qNext">下一個模式 →</button>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('qAgain').addEventListener('click', startQuiz);
+  document.getElementById('qNext').addEventListener('click', function(){ setMode('spell'); });
+}
+
+function startSpell(){
+  state.spell = { idx:0, correct:0, total:0, locked:false, list:shuffle(WORDS.slice()) };
+  statusEl.textContent = '拼寫 0 / ' + WORDS.length;
+  renderSpell();
+}
+function renderSpell(){
+  var s = state.spell;
+  if(s.idx >= WORDS.length){ finishSpell(); return; }
+  var item = s.list[s.idx];
+  // 顯示首字提示
+  var hint = item.w.charAt(0) + '_'.repeat(item.w.length-1);
+  statusEl.textContent = '拼寫 ' + (s.idx+1) + ' / ' + WORDS.length;
+  stage.innerHTML =
+    '<div class="spelling">'+
+      '<div class="spelling-def">'+
+        '<div class="dcn">'+item.cn+'</div>'+
+        '<div class="den">'+item.en+'</div>'+
+      '</div>'+
+      '<div class="spelling-hint">提示：'+item.w.length+' 個字，首字是「'+item.w.charAt(0)+'」</div>'+
+      '<input class="spelling-input" id="spInput" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" placeholder="輸入詞語...">'+
+      '<div class="spelling-fb" id="spFb"></div>'+
+      '<div class="btnrow"><button class="btn" id="spCheck">檢查 ✓</button></div>'+
+    '</div>';
+  var input = document.getElementById('spInput');
+  var fb = document.getElementById('spFb');
+  setTimeout(function(){ input.focus(); }, 100);
+  function check(){
+    if(s.locked) return;
+    var val = (input.value || '').trim();
+    if(!val){ fb.className='spelling-fb no'; fb.textContent='請輸入詞語'; return; }
+    s.locked = true;
+    s.total++;
+    if(val === item.w){
+      s.correct++;
+      state.score += 8;
+      updateScore();
+      input.classList.add('right');
+      fb.className='spelling-fb ok'; fb.textContent='✓ 對了！就是「'+item.w+'」';
+      setTimeout(function(){ s.idx++; s.locked=false; renderSpell(); }, 900);
+    } else {
+      state.score = Math.max(0, state.score - 3);
+      updateScore();
+      input.classList.add('wrong');
+      fb.className='spelling-fb no';
+      fb.innerHTML='✕ 不對，正確答案是：<b>'+item.w+'</b>';
+      setTimeout(function(){ s.idx++; s.locked=false; renderSpell(); }, 1500);
+    }
+  }
+  document.getElementById('spCheck').addEventListener('click', check);
+  input.addEventListener('keydown', function(e){ if(e.key==='Enter') check(); });
+}
+function finishSpell(){
+  var c=state.spell.correct, total=WORDS.length;
+  var rank = c===total ? '全對！丹心狀元' : c>=9 ? '錚錚鐵骨' : c>=6 ? '勤勉赤子' : '初識忠魂';
+  stage.innerHTML =
+    '<div class="result">'+
+      '<div class="chop">'+rank.charAt(0)+'</div>'+
+      '<h2>'+rank+'</h2>'+
+      '<div class="rank">拼對 '+c+' / '+total+'</div>'+
+      '<div class="desc">恭喜完成全部四個模式！</div>'+
+      '<div class="btnrow">'+
+        '<button class="btn ghost" id="spAgain" style="margin-right:10px">再玩一次</button>'+
+        '<button class="btn" id="spDone">完成 ✓</button>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('spAgain').addEventListener('click', startSpell);
+  document.getElementById('spDone').addEventListener('click', function(){ setMode('flash'); });
+}
+
+modesEl.addEventListener('click', function(e){
+  var btn = e.target.closest('.mode');
+  if(btn) setMode(btn.dataset.mode);
+});
+
+setMode('flash');
+updateScore();
+</script>
+</body>
+</html>
